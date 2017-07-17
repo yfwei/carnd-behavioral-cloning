@@ -116,5 +116,7 @@ To augment the training data set, I also flipped the images and steering angles 
 
 ![alt_text][image3]
 
-After the collection process, I had 21504 training samples. I used 20% of them as the validation data set. The data set were randomly shuffled before feeding into the model. 
+After the collection process, I had 21504 training samples. I used 20% of them as the validation data set. The data set were randomly shuffled before feeding into the model.
+
+I trained the model with 10 epochs and saved the best model (with the minimum validation loss). The adam optimizer was used to avoid tuning learning rate manually.
 
