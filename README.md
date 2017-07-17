@@ -61,26 +61,50 @@ Training data was chosen to keep the vehicle driving on the road. I used center 
 
 For details about how I created the training data, see the next section.
 
-###Model Architecture and Training Strategy
+### Model Architecture and Training Strategy
 
 #### 1. Solution Design Approach
 
-My very first model was a vanilla Nvidia end to end learning network for self driving cars with only the center camera images. It had a low mean squared error on both training data set and validation data set, but it would drive into the river directly on the first curve.
+My very first model was a vanilla Nvidia end to end learning network for self driving cars with only the center camera images. It had a low mean squared error on both training data set and validation data set, but it would drive directly into the river on the first curve.
 
-So to prevent the vehicle from drowning itself, I added left and right camera images to the training data set with 
+In order to prevent the vehicle from drowning itself, I added left and right camera images to the training data set with 0.2 steering angle degree correction. Although the vehicle drove much better with new data, the model had a low mean squared error on the training data set, but a high mean squared error on the validation data set, which implies the model was overfitting. I increased the depth of the model (model.py line 96) and added a dropout layer (model.py line 93) to overcome this overfitting problem.
 
-In order to reduce overfitting. 
-
-The overall strategy for deriving a model architecture was to ...
-
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
-
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
-
-To combat the overfitting, I modified the model so that ...
-
-Then I ... 
-
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
+The vehicle still had problems driving around few curves. So I recorded three curve driving to let the model learn how to drive smoothly around curves.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
+
+#### 2. Final Model Architecture
+
+My final model consisted of the following layers:
+
+| Layer         		|     Description	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| Input         		| 160x320x3 color image   							| 
+| Normalization     	|  	|
+| Cropping     	| Crop top 65 pixels and bottom 20 pixels 	|
+| Convolution 5x5				|	2x2 stride, outputs 36x152x24											|
+| ReLU					|			
+| Convolution 5x5				|	2x2 stride, outputs 16x77x36											|
+| ReLU					|			
+| Convolution 5x5				|	2x2 stride, outputs 6x37x48											|
+| ReLU					|			
+| Convolution 3x3				|	1x1 stride, outputs 4x35x64											|
+| ReLU					|			
+| Convolution 3x3				|	1x1 stride, outputs 2x33x64											|
+| ReLU					|			
+| Fully connected		| outputs 100        									|
+| Dropout		|         									|
+| Fully connected		| outputs 50        									|
+| Fully connected		| outputs 20        									|
+| Fully connected		| outputs 10        									|
+| Fully connected		| outputs 1        									|
+
+#### 3. Creation of the Training Set & Training Process
+
+To capture good driving behavior, I first recorded three laps on track one using center lane driving. Here is an example images of center lane driving from three cameras:
+
+![alt text][image1]
+
+Then I cropped out top and bottom portion of the image to remove the information that is not helpful to train the model. Here is an example of cropped image:
+
+![alt text][image2]
