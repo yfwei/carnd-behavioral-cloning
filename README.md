@@ -11,6 +11,7 @@ The goals / steps of this project are the following:
 
 [image1]: ./images/cameras.png "Multiple Cameras"
 [image2]: ./images/cropped.png "Cropped image"
+[image3]: ./images/flipped.png "Flipped image"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -25,7 +26,7 @@ My project includes the following files:
 * drive.py for driving the car in autonomous mode with maximum speed 30 MPH
 * model.h5 containing a trained convolution neural network 
 * README.md summarizing the results
-* video.mp4 recording of the vehicle driving autonomously one lap around the track
+* video.mp4 recording of the vehicle driving autonomously one lap around the track one
 
 #### 2. Submission includes functional code
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
@@ -69,7 +70,7 @@ My very first model was a vanilla Nvidia end to end learning network for self dr
 
 In order to prevent the vehicle from drowning itself, I added left and right camera images to the training data set with 0.2 steering angle degree correction. Although the vehicle drove much better with new data, the model had a low mean squared error on the training data set, but a high mean squared error on the validation data set, which implies the model was overfitting. I increased the depth of the model (model.py line 96) and added a dropout layer (model.py line 93) to overcome this overfitting problem.
 
-The vehicle still had problems driving around few curves. So I recorded three curve driving to let the model learn how to drive smoothly around curves.
+The vehicle still had problems driving around few curves. So I recorded curve driving to let the model learn how to drive smoothly around curves.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
@@ -105,6 +106,15 @@ To capture good driving behavior, I first recorded three laps on track one using
 
 ![alt text][image1]
 
+I then recored one lab of smooth curve driving so that the model can drive more like a human around curves.
+
 Then I cropped out top and bottom portion of the image to remove the information that is not helpful to train the model. Here is an example of cropped image:
 
 ![alt text][image2]
+
+To augment the training data set, I also flipped the images and steering angles so that my model could generalize well. Here is an image that has then been flipped:
+
+![alt_text][image3]
+
+After the collection process, I had 21504 training samples. I used 20% of them as the validation data set. The data set were randomly shuffled before feeding into the model. 
+
