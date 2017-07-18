@@ -19,7 +19,7 @@ def readAndAugmentData(line):
     measurements = []
 
     # steering angle correction value for the left the right camera
-    correction = 0.2
+    correction = 0.1
     for i in range(3):
         measurement = float(line[3])
 
@@ -37,6 +37,12 @@ def readAndAugmentData(line):
         filename = source_path.split('/')[-1]
         current_path = 'data/IMG/' + filename
         image = cv2.imread(current_path)
+
+        # The image read by the OpenCV is in BGR color format, but the color
+        # format used in the drive.py is in RGB. So we need to convert the color
+        # format here to have the same color format when performing steering
+        # angle predictions
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         images.append(image)
 
         # Flip the image horizontally
@@ -75,11 +81,11 @@ print("Number of training samples: ", len(X_train))
 # Based on the Nvidia End-to-End learning network architecture
 model = Sequential()
 
-# Normalize the image
-model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160, 320, 3)))
-
 # Crop the top and bottom portion of the image to remove useless information
-model.add(Cropping2D(cropping=((65, 20), (0, 0))))
+model.add(Cropping2D(cropping=((70, 25), (0, 0)), input_shape=(160, 320, 3)))
+
+# Normalize the image
+model.add(Lambda(lambda x: (x / 255.0) - 0.5))
 
 model.add(Conv2D(24, (5, 5), strides=(2, 2), activation='relu'))
 model.add(Conv2D(36, (5, 5), strides=(2, 2), activation='relu'))
